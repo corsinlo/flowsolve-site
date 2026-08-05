@@ -1,0 +1,23 @@
+---
+import type { LandingCopy, PublicLinks } from '../../i18n';
+import PilotActions from './PilotActions.astro';
+
+interface Props {
+  copy: LandingCopy;
+  links: PublicLinks;
+}
+
+const { copy, links } = Astro.props;
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__copy">
+    <p class="eyebrow"><span aria-hidden="true"></span>{copy.hero.eyebrow}</p>
+    <h1 id="hero-title">{copy.hero.title}</h1>
+    <p class="hero__body">{copy.hero.body}</p>
+    <div class="cta-group">
+      <PilotActions {copy} {links} />
+    </div>
+  </div>
+
+</section>

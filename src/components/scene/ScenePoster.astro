@@ -1,0 +1,90 @@
+<aside class="scene-poster-shell" data-aspect-ratio="8/5">
+  <svg
+    class="scene-poster"
+    viewBox="0 0 800 500"
+    width="800"
+    height="500"
+    aria-hidden="true"
+    focusable="false"
+    preserveAspectRatio="xMidYMid meet"
+  >
+    <defs>
+      <pattern id="scene-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M40 0H0V40" fill="none" stroke="#F4F0E6" stroke-opacity=".055" />
+      </pattern>
+      <clipPath id="scene-frame"><rect x="0" y="0" width="800" height="500" rx="28" /></clipPath>
+    </defs>
+
+    <g clip-path="url(#scene-frame)">
+      <rect width="800" height="500" fill="#202521" />
+      <rect width="800" height="500" fill="url(#scene-grid)" />
+
+      <!-- Fragmented source signals -->
+      <g fill="none" stroke="#F4F0E6" stroke-width="3">
+        <rect x="48" y="68" width="98" height="62" rx="11" />
+        <path d="M66 88H124M66 103H108" stroke-opacity=".54" />
+        <rect x="75" y="166" width="88" height="72" rx="11" />
+        <circle cx="100" cy="191" r="8" stroke-opacity=".58" />
+        <path d="m90 222 20-19 15 13 13-11 14 17" stroke-opacity=".58" />
+        <rect x="42" y="282" width="118" height="54" rx="11" />
+        <path d="M61 310c7-18 14 18 21 0s14 18 21 0 14 18 21 0 14 18 21 0" stroke-opacity=".65" />
+        <rect x="84" y="376" width="96" height="48" rx="8" />
+        <path d="M101 400H163" stroke-opacity=".58" />
+        <path d="m52 429 22-22 22 22-22 22Z" />
+        <circle cx="74" cy="429" r="6" fill="#F0B84C" stroke="none" />
+      </g>
+
+      <!-- Evidence paths converge without hiding the incomplete signal -->
+      <g fill="none" stroke-linecap="round" stroke-width="2.5">
+        <path d="M146 99C228 99 244 188 317 213" stroke="#F4F0E6" stroke-opacity=".4" />
+        <path d="M163 202C230 202 260 224 317 238" stroke="#F4F0E6" stroke-opacity=".62" />
+        <path d="M160 309C229 309 252 275 317 261" stroke="#F4F0E6" stroke-opacity=".5" />
+        <path d="M180 400C258 400 264 306 326 279" stroke="#F4F0E6" stroke-opacity=".35" />
+        <path d="M96 429C190 429 255 333 332 287" stroke="#F0B84C" stroke-dasharray="7 9" />
+      </g>
+
+      <!-- Resolution core and visible amber missing-data gap -->
+      <g fill="none" stroke-linecap="round" stroke-width="12">
+        <path d="M372 193a62 62 0 1 0 48 101" stroke="#F4F0E6" />
+        <path d="M420 294a62 62 0 0 0 10-14" stroke="#F0B84C" />
+        <path d="M439 254a62 62 0 0 0-10-40" stroke="#B8F45D" />
+      </g>
+      <circle cx="378" cy="250" r="16" fill="#B8F45D" />
+      <path d="M438 250H490" fill="none" stroke="#B8F45D" stroke-linecap="round" stroke-width="5" />
+
+      <!-- Evidence-backed alternatives remain distinct -->
+      <g fill="#111412" stroke="#D9D1C0" stroke-width="2">
+        <rect x="486" y="153" width="100" height="60" rx="9" />
+        <rect x="500" y="220" width="100" height="60" rx="9" />
+        <rect x="486" y="287" width="100" height="60" rx="9" />
+      </g>
+      <g stroke="#D9D1C0" stroke-opacity=".5" stroke-width="2">
+        <path d="M505 174H565M505 187H548M519 241H579M519 254H561M505 308H565M505 321H548" />
+      </g>
+      <g fill="none" stroke="#B8F45D" stroke-width="2.5">
+        <path d="M438 250C463 250 465 183 486 183" />
+        <path d="M438 250H500" />
+        <path d="M438 250C463 250 465 317 486 317" />
+      </g>
+
+      <!-- Human approval gate blocks output -->
+      <g fill="none" stroke="#F0B84C" stroke-width="4">
+        <path d="M620 150V350" />
+        <path d="M604 181H636M604 319H636" />
+        <circle cx="620" cy="250" r="18" fill="#202521" />
+        <path d="m611 250 7 7 13-16" stroke-linecap="round" stroke-linejoin="round" />
+      </g>
+
+      <!-- Approved output resolves into an editable quote outline -->
+      <path d="M638 250H667" fill="none" stroke="#B8F45D" stroke-linecap="round" stroke-width="5" />
+      <g fill="#111412" stroke="#F4F0E6" stroke-width="3">
+        <path d="M667 126H744L770 152V374H667Z" />
+        <path d="M744 126V152H770" fill="none" />
+      </g>
+      <g fill="none" stroke="#D9D1C0" stroke-opacity=".58" stroke-width="3">
+        <path d="M691 190H747M691 218H747M691 246H730M691 302H747" />
+      </g>
+      <rect x="691" y="331" width="57" height="8" rx="4" fill="#B8F45D" />
+    </g>
+  </svg>
+</aside>

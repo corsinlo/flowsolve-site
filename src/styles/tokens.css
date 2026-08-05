@@ -1,0 +1,15 @@
+:root {
+  --graphite-950: #111412;
+  --graphite-850: #202521;
+  --ivory-100: #f4f0e6;
+  --ivory-300: #d9d1c0;
+  --lime-400: #b8f45d;
+  --lime-600: #78b52d;
+  --amber-400: #f0b84c;
+  --red-400: #ef7c72;
+  --focus: #8ec9ff;
+  --content-max: 76rem;
+  --radius-card: 1.25rem;
+  --font-sans: "Arial Nova", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}

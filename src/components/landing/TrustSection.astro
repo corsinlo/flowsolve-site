@@ -1,0 +1,26 @@
+---
+import type { LandingCopy } from '../../i18n';
+
+interface Props {
+  copy: LandingCopy;
+}
+
+const { copy } = Astro.props;
+---
+
+<section id="trust" class="trust section-frame" aria-labelledby="trust-heading">
+  <div class="section-intro trust__intro">
+    <p class="section-kicker">{copy.sectionLabels.trust}</p>
+    <h2 id="trust-heading">{copy.trust.heading}</h2>
+    <p>{copy.trust.body}</p>
+  </div>
+
+  <ol class="trust__principles">
+    {copy.trust.principles.map((principle, index) => (
+      <li>
+        <span aria-hidden="true">0{index + 1}</span>
+        <p>{principle}</p>
+      </li>
+    ))}
+  </ol>
+</section>

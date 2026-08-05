@@ -1,0 +1,41 @@
+---
+import type { LandingCopy } from '../../i18n';
+
+interface Props {
+  copy: LandingCopy;
+}
+
+const { copy } = Astro.props;
+---
+
+<div class="packs">
+  <section id="automotive" class="automotive section-frame" aria-labelledby="packs-heading">
+    <div class="automotive__heading">
+      <p class="section-kicker">{copy.sectionLabels.automotive}</p>
+      <h2 id="packs-heading">{copy.packs.heading}</h2>
+    </div>
+    <article class="pack-card pack-card--active">
+      <p class="pack-status" data-status="pilot"><span aria-hidden="true"></span>{copy.packs.automotive.status}</p>
+      <h3>{copy.packs.automotive.title}</h3>
+      <p>{copy.packs.automotive.body}</p>
+      <div class="pack-card__code" aria-hidden="true">AUTO / PILOT</div>
+    </article>
+  </section>
+
+  <section id="future-packs" class="future-packs section-frame" aria-labelledby="future-packs-heading">
+    <div class="future-packs__heading">
+      <p class="section-kicker">{copy.sectionLabels.futurePacks}</p>
+      <h2 id="future-packs-heading">{copy.packs.futureHeading}</h2>
+    </div>
+    <div class="future-packs__grid">
+      {copy.packs.future.map((pack, index) => (
+        <article class="pack-card pack-card--future" data-status="under-evaluation">
+          <p class="pack-status"><span aria-hidden="true"></span>{copy.packs.underEvaluation}</p>
+          <p class="pack-card__index" aria-hidden="true">0{index + 2}</p>
+          <h3>{pack.title}</h3>
+          <p>{pack.body}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+</div>

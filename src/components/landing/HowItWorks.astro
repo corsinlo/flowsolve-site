@@ -1,0 +1,27 @@
+---
+import type { LandingCopy } from '../../i18n';
+
+interface Props {
+  copy: LandingCopy;
+}
+
+const { copy } = Astro.props;
+---
+
+<section id="how" class="how section-frame" aria-labelledby="how-heading">
+  <div class="section-intro how__intro">
+    <p class="section-kicker">{copy.sectionLabels.how}</p>
+    <h2 id="how-heading">{copy.howItWorks.heading}</h2>
+  </div>
+  <ol class="how__steps">
+    {copy.howItWorks.steps.map((step, index) => (
+      <li data-step={step.id}>
+        <div class="how__number" aria-hidden="true">0{index + 1}</div>
+        <div>
+          <h3>{step.title}</h3>
+          <p>{step.body}</p>
+        </div>
+      </li>
+    ))}
+  </ol>
+</section>

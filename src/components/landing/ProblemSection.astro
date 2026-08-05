@@ -1,0 +1,24 @@
+---
+import type { LandingCopy } from '../../i18n';
+
+interface Props {
+  copy: LandingCopy;
+}
+
+const { copy } = Astro.props;
+---
+
+<section id="problem" class="problem" aria-labelledby="problem-heading">
+  <div class="section-frame problem__inner">
+    <div class="section-intro">
+      <p class="section-kicker section-kicker--dark">{copy.sectionLabels.problem}</p>
+      <h2 id="problem-heading">{copy.problem.heading}</h2>
+      <p>{copy.problem.body}</p>
+    </div>
+    <ul class="problem__costs">
+      {copy.problem.costs.map((cost, index) => (
+        <li><span aria-hidden="true">0{index + 1}</span>{cost}</li>
+      ))}
+    </ul>
+  </div>
+</section>

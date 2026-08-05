@@ -1,0 +1,34 @@
+---
+import { type LandingCopy, type Locale, type PublicLinks } from '../../i18n';
+import SiteHeader from '../SiteHeader.astro';
+import SiteFooter from '../SiteFooter.astro';
+import Hero from './Hero.astro';
+import HowItWorks from './HowItWorks.astro';
+import PacksSection from './PacksSection.astro';
+import PilotCta from './PilotCta.astro';
+import ProblemSection from './ProblemSection.astro';
+import ResolutionStory from './ResolutionStory.astro';
+import TrustSection from './TrustSection.astro';
+
+interface Props {
+  locale: Locale;
+  copy: LandingCopy;
+  links: PublicLinks;
+}
+
+const { locale, copy, links } = Astro.props;
+---
+
+<SiteHeader {locale} {copy} />
+<main id="main-content" tabindex="-1">
+  <Hero {copy} {links} />
+
+  <ResolutionStory {copy} />
+
+  <ProblemSection {copy} />
+  <HowItWorks {copy} />
+  <PacksSection {copy} />
+  <TrustSection {copy} />
+  <PilotCta {locale} {copy} {links} />
+</main>
+<SiteFooter {copy} />

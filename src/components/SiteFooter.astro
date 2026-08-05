@@ -1,0 +1,17 @@
+---
+import type { LandingCopy } from '../i18n';
+
+interface Props {
+  copy: LandingCopy;
+}
+
+const { copy } = Astro.props;
+---
+
+<footer class="site-footer" data-site-footer>
+  <div class="site-footer__inner">
+    <p class="site-footer__name">Flowsolve</p>
+    <p class="site-footer__summary">{copy.footer.summary}</p>
+    <p class="site-footer__notice">{copy.footer.previewNotice}</p>
+  </div>
+</footer>

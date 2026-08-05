@@ -1,0 +1,45 @@
+---
+import { STORY_STAGE_IDS, type LandingCopy } from '../../i18n';
+import { ResolutionScene } from '../scene/ResolutionScene.client';
+import ScenePoster from '../scene/ScenePoster.astro';
+
+interface Props {
+  copy: LandingCopy;
+}
+
+const { copy } = Astro.props;
+---
+
+<section id="story" class="story section-frame" aria-labelledby="story-heading">
+  <div class="section-intro story__intro">
+    <p class="section-kicker">01 / 06</p>
+    <h2 id="story-heading">{copy.story.heading}</h2>
+    <p>{copy.story.lead}</p>
+  </div>
+
+  <div id="resolution-story" class="story__experience">
+    <ScenePoster />
+    <ResolutionScene storyId="resolution-story" client:visible />
+    <div class="story__stages">
+      {STORY_STAGE_IDS.map((stageId, index) => {
+        const stage = copy.story.stages[stageId];
+        return (
+          <article class:list={['story-card', `story-card--${stageId}`]} data-story-stage={stageId}>
+            <div class="story-card__rail" aria-hidden="true"><span>{String(index + 1).padStart(2, '0')}</span></div>
+            <div class="story-card__content">
+              <div class="story-card__meta">
+                <p class="story-card__eyebrow">{stage.eyebrow}</p>
+                <p class="status-chip">{stage.statusLabel}</p>
+              </div>
+              <h3>{stage.title}</h3>
+              <p class="story-card__body">{stage.body}</p>
+              <ul aria-label={`${copy.story.stageLabel} ${index + 1}`}>
+                {stage.evidenceItems.map((item) => <li>{item}</li>)}
+              </ul>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </div>
+</section>

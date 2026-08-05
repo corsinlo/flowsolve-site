@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { resolveCopy } from '../i18n';
+import { localePath } from '../lib/urls';
+
+const locale = 'en' as const;
+const copy = resolveCopy(locale);
+---
+
+<BaseLayout {locale} {copy}>
+  <main id="main-content">
+    <h1>404</h1>
+    <p>{copy.footer.previewNotice}</p>
+    <a href={localePath('en')}>Flowsolve</a>
+  </main>
+</BaseLayout>

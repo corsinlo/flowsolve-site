@@ -1,0 +1,55 @@
+{
+  "name": "@flowsolve/site",
+  "type": "module",
+  "version": "0.0.1",
+  "packageManager": "npm@10.9.2",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test:unit": "vitest run",
+    "test:pages-cta": "node --test scripts/check-pages-cta.test.mjs",
+    "pages:preflight": "node scripts/check-pages-cta.mjs",
+    "build": "node scripts/build-site.mjs",
+    "test:build-finalization": "node --test scripts/finalize-build.test.mjs scripts/build-site.test.mjs",
+    "test:static": "vitest run tests/static",
+    "test:e2e": "PUBLIC_PREVIEW_MODE= PUBLIC_PILOT_REQUEST_URL=https://github.com/corsinlo/flowsolve-site/issues/new PUBLIC_PILOT_SIGN_IN_URL=https://www.linkedin.com/login npm run build && PUBLIC_PREVIEW_MODE= PUBLIC_PILOT_REQUEST_URL=https://github.com/corsinlo/flowsolve-site/issues/new PUBLIC_PILOT_SIGN_IN_URL=https://www.linkedin.com/login playwright test tests/e2e --grep-invert @lab-inp",
+    "test:budget": "node --test scripts/check-bundles.test.mjs && node scripts/check-bundles.mjs",
+    "test:perf:lighthouse": "node --test scripts/lighthouse-config.test.mjs && lhci autorun",
+    "test:perf:interaction": "PUBLIC_PREVIEW_MODE= PUBLIC_PILOT_REQUEST_URL=https://github.com/corsinlo/flowsolve-site/issues/new PUBLIC_PILOT_SIGN_IN_URL=https://www.linkedin.com/login npm run build && PUBLIC_PREVIEW_MODE= PUBLIC_PILOT_REQUEST_URL=https://github.com/corsinlo/flowsolve-site/issues/new PUBLIC_PILOT_SIGN_IN_URL=https://www.linkedin.com/login playwright test tests/e2e/performance.spec.ts --grep @lab-inp",
+    "test:perf": "run-s test:perf:interaction test:perf:lighthouse",
+    "verify": "run-s check test:unit test:pages-cta test:build-finalization build test:static test:perf:interaction test:e2e test:budget test:perf:lighthouse"
+  },
+  "dependencies": {
+    "@astrojs/react": "^6.0.2",
+    "@react-three/fiber": "^9.7.0",
+    "astro": "^7.1.6",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "three": "^0.185.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@axe-core/playwright": "^4.12.1",
+    "@lhci/cli": "^0.15.1",
+    "@playwright/test": "^1.62.1",
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/react": "^16.3.2",
+    "@types/jsdom": "^28.0.3",
+    "@types/three": "^0.185.3",
+    "@vitest/coverage-v8": "^4.1.10",
+    "cheerio": "^1.2.0",
+    "gzip-size": "^7.0.0",
+    "jsdom": "^29.1.1",
+    "npm-run-all2": "^8.0.4",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.10"
+  },
+  "overrides": {
+    "tmp": "0.2.7",
+    "uuid": "11.1.1"
+  }
+}

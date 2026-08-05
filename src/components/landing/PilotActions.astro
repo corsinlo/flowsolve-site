@@ -1,0 +1,35 @@
+---
+import type { LandingCopy, PublicLinks } from '../../i18n';
+
+interface Props {
+  copy: LandingCopy;
+  links: PublicLinks;
+  dark?: boolean;
+}
+
+const { copy, links, dark = false } = Astro.props;
+---
+
+{
+  links.mode === 'live' ? (
+    <>
+      <a class="cta cta--primary" href={links.requestPilot.href} rel="noopener noreferrer" target="_blank">
+        {copy.pilot.requestLabel}<span class="cta__arrow" aria-hidden="true">↗</span>
+        <span class="sr-only"> — {copy.accessibility.externalDestination}</span>
+      </a>
+      <a class:list={['cta', 'cta--secondary', { 'cta--secondary-dark': dark }]} href={links.pilotSignIn.href} rel="noopener noreferrer" target="_blank">
+        {copy.pilot.signInLabel}<span class="cta__arrow" aria-hidden="true">↗</span>
+        <span class="sr-only"> — {copy.accessibility.externalDestination}</span>
+      </a>
+    </>
+  ) : (
+    <>
+      <span class="cta cta--primary cta--disabled" aria-disabled="true">
+        {copy.pilot.previewRequestLabel}
+      </span>
+      <span class:list={['cta', 'cta--secondary', 'cta--disabled', { 'cta--secondary-dark': dark }]} aria-disabled="true">
+        {copy.pilot.previewSignInLabel}
+      </span>
+    </>
+  )
+}

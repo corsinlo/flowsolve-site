@@ -1,0 +1,14 @@
+---
+import LandingPage from '../components/landing/LandingPage.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { resolveCopy } from '../i18n';
+import { getPublicLinks } from '../lib/urls';
+
+const locale = 'en' as const;
+const copy = resolveCopy(locale);
+const links = getPublicLinks(import.meta.env);
+---
+
+<BaseLayout {locale} {copy}>
+  <LandingPage {locale} {copy} {links} />
+</BaseLayout>

@@ -1,0 +1,36 @@
+---
+import type { LandingCopy, Locale } from '../i18n';
+import { localePath, withBase } from '../lib/urls';
+import LocaleSwitcher from './LocaleSwitcher.astro';
+
+interface Props {
+  locale: Locale;
+  copy: LandingCopy;
+}
+
+const { locale, copy } = Astro.props;
+---
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href={localePath(locale)}>
+      <img
+        src={withBase('/brand/flowsolve-logo-horizontal-reversed.svg')}
+        alt=""
+        aria-hidden="true"
+        width="306"
+        height="64"
+      />
+      <span class="sr-only" data-brand-name="Flowsolve">Flowsolve</span>
+    </a>
+
+    <nav class="section-navigation" aria-label={copy.accessibility.pageNavigation}>
+      <a href="#story">{copy.nav.story}</a>
+      <a href="#how">{copy.nav.howItWorks}</a>
+      <a href="#automotive">{copy.nav.automotive}</a>
+      <a href="#trust">{copy.nav.trust}</a>
+    </nav>
+
+    <LocaleSwitcher {locale} {copy} />
+  </div>
+</header>

@@ -1,0 +1,39 @@
+---
+import { formatCurrency } from '../../i18n/format';
+import type { LandingCopy, Locale, PublicLinks } from '../../i18n';
+import PilotActions from './PilotActions.astro';
+
+interface Props {
+  locale: Locale;
+  copy: LandingCopy;
+  links: PublicLinks;
+}
+
+const { locale, copy, links } = Astro.props;
+---
+
+<section id="pilot" class="pilot-cta" aria-labelledby="pilot-heading">
+  <div class="section-frame pilot-cta__inner">
+    <div class="pilot-cta__copy">
+      <p class="section-kicker section-kicker--dark">{copy.sectionLabels.pilot}</p>
+      <h2 id="pilot-heading">{copy.pilot.heading}</h2>
+      <p>{copy.pilot.body}</p>
+      <div class="cta-group">
+        <PilotActions {copy} {links} dark />
+      </div>
+    </div>
+
+    <article class="quote-draft">
+      <header>
+        <h3>{copy.quoteExample.illustrativeLabel}</h3>
+        <span>{copy.quoteExample.evidenceLabel}</span>
+      </header>
+      <div class="quote-draft__lines" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+      <p class="quote-draft__amount">{formatCurrency(locale, copy.quoteExample.amountMinor)}</p>
+      <p class="quote-draft__tax">{copy.quoteExample.taxLabel}</p>
+      <footer><span aria-hidden="true"></span>{copy.quoteExample.reviewRequiredLabel}</footer>
+    </article>
+  </div>
+</section>

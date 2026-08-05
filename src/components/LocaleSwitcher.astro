@@ -1,0 +1,31 @@
+---
+import { LOCALES, type LandingCopy, type Locale } from '../i18n';
+import { localePath } from '../lib/urls';
+
+interface Props {
+  locale: Locale;
+  copy: LandingCopy;
+}
+
+const { locale, copy } = Astro.props;
+const preservedSections = ['top', 'story', 'problem', 'how', 'automotive', 'future-packs', 'trust', 'pilot'] as const;
+
+const destination = (targetLocale: Locale, section: typeof preservedSections[number]) => (
+  section === 'top' ? localePath(targetLocale) : `${localePath(targetLocale)}#${section}`
+);
+---
+
+<nav class="locale-switcher" data-locale-navigation aria-label={copy.accessibility.languageNavigation}>
+  {preservedSections.map((section) => (
+    <span class="locale-switcher__set" data-preserves-section={section}>
+      {LOCALES.map((item) => (
+        <a
+          href={destination(item, section)}
+          hreflang={item}
+          lang={item}
+          aria-current={item === locale ? 'page' : undefined}
+        >{item.toUpperCase()}</a>
+      ))}
+    </span>
+  ))}
+</nav>
