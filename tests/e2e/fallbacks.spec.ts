@@ -1,6 +1,5 @@
 import { expect, test } from '@playwright/test';
 import { installRequestGuard } from './request-guard';
-import { installHighCapabilitySceneProfile } from './scene-capabilities';
 
 const REQUEST_PILOT_URL = 'https://github.com/corsinlo/flowsolve-site/issues/new';
 const PILOT_SIGN_IN_URL = 'https://www.linkedin.com/login';
@@ -11,40 +10,13 @@ test('keeps the complete journey usable when enhancement is unavailable', async 
       HTMLCanvasElement.prototype.getContext = () => null;
     });
   }
-  if (testInfo.project.name === 'webgl-context-lost') {
-    await installHighCapabilitySceneProfile(page);
-  }
-
   const guard = installRequestGuard(page, testInfo.project.use.baseURL as string, [
     REQUEST_PILOT_URL,
     PILOT_SIGN_IN_URL,
   ]);
   await page.goto('en/');
 
-  if (testInfo.project.name === 'reduced-motion' || testInfo.project.name === 'get-context-null') {
-    const island = page.locator('#resolution-story .story__visual > astro-island[client="visible"]');
-    await expect(island).toBeVisible();
-    await island.scrollIntoViewIfNeeded();
-    await expect(island).not.toHaveAttribute('ssr', '');
-  }
-
-  if (testInfo.project.name === 'webgl-context-lost') {
-    const island = page.locator('#resolution-story .story__visual > astro-island[client="visible"]');
-    await expect(island).toBeVisible();
-    await island.scrollIntoViewIfNeeded();
-    const canvas = page.locator('[data-resolution-scene] canvas');
-    await expect(canvas).toBeVisible();
-    await canvas.dispatchEvent('webglcontextlost', { cancelable: true });
-    await expect(canvas).toHaveCount(0);
-  }
-
-  if (testInfo.project.name === 'reduced-motion') {
-    expect(await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches)).toBe(true);
-    await expect(page.locator('[data-resolution-scene]')).toHaveCount(0);
-  }
-  if (testInfo.project.name === 'get-context-null') {
-    await expect(page.locator('[data-resolution-scene] canvas')).toHaveCount(0);
-  }
+  await expect(page.locator('#resolution-story > .scene-poster-shell')).toBeVisible();
 
   const stages = page.locator('[data-story-stage]');
   await expect(stages).toHaveCount(6);

@@ -1,6 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
-import { installHighCapabilitySceneProfile } from './scene-capabilities';
 
 const viewports = [
   { name: '320px', width: 320, height: 900 },
@@ -11,7 +10,6 @@ const viewports = [
 
 for (const viewport of viewports) {
   test(`English page stays accessible at ${viewport.name}`, async ({ page }) => {
-    if (viewport.width === 1440) await installHighCapabilitySceneProfile(page);
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await page.goto('en/');
 
@@ -77,14 +75,7 @@ for (const viewport of viewports) {
     await expect(stages).toHaveCount(6);
     for (const stage of await stages.all()) await expect(stage).toBeVisible();
     await expect(page.locator('#trust')).toBeVisible();
-    if (viewport.width === 1440) {
-      const island = page.locator('#resolution-story .story__visual > astro-island[client="visible"]');
-      await island.scrollIntoViewIfNeeded();
-      const scene = page.locator('[data-resolution-scene]');
-      await expect(scene).toBeVisible();
-      await expect(scene).toHaveAttribute('aria-hidden', 'true');
-      await expect(scene).toHaveAttribute('role', 'presentation');
-    }
+    await expect(page.locator('#resolution-story > .scene-poster-shell')).toBeVisible();
 
     const results = await new AxeBuilder({ page }).analyze();
     const severe = results.violations.filter(({ impact }) => impact === 'serious' || impact === 'critical');

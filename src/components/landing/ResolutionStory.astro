@@ -1,6 +1,5 @@
 ---
 import { STORY_STAGE_IDS, type LandingCopy } from '../../i18n';
-import { ResolutionScene } from '../scene/ResolutionScene.client';
 import ScenePoster from '../scene/ScenePoster.astro';
 
 interface Props {
@@ -18,10 +17,7 @@ const { copy } = Astro.props;
   </div>
 
   <div id="resolution-story" class="story__experience">
-    <div class="story__visual">
-      <ScenePoster />
-      <ResolutionScene storyId="resolution-story" client:visible />
-    </div>
+    <ScenePoster />
     <div class="story__stages">
       {STORY_STAGE_IDS.map((stageId, index) => {
         const stage = copy.story.stages[stageId];

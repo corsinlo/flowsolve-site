@@ -5,7 +5,6 @@ import {
   type InteractionMeasurement,
 } from './performance-interactions';
 import {
-  installHighCapabilitySceneProfile,
   installLowPowerSceneProfile,
 } from './scene-capabilities';
 
@@ -18,35 +17,6 @@ async function settleRendering(page: Page): Promise<void> {
       requestAnimationFrame(() => resolve());
     });
   }));
-}
-
-async function installSceneDiagnostics(page: Page): Promise<void> {
-  await page.addInitScript(() => {
-    const diagnostics = {
-      lcpElement: '',
-      lcpWasCanvas: false,
-      rafCallbacks: 0,
-      rafRequests: 0,
-    };
-    Object.defineProperty(window, '__flowsolveScenePerformanceDiagnostics', { value: diagnostics });
-
-    const originalRequestAnimationFrame = window.requestAnimationFrame.bind(window);
-    window.requestAnimationFrame = (callback: FrameRequestCallback) => {
-      diagnostics.rafRequests += 1;
-      return originalRequestAnimationFrame((timestamp) => {
-        diagnostics.rafCallbacks += 1;
-        callback(timestamp);
-      });
-    };
-
-    new PerformanceObserver((list) => {
-      for (const entry of list.getEntries()) {
-        const lcp = entry as PerformanceEntry & { element?: Element };
-        diagnostics.lcpElement = lcp.element?.tagName ?? '';
-        diagnostics.lcpWasCanvas = lcp.element instanceof HTMLCanvasElement;
-      }
-    }).observe({ type: 'largest-contentful-paint', buffered: true });
-  });
 }
 
 async function installInteractionDiagnostics(page: Page): Promise<void> {
@@ -83,85 +53,21 @@ async function installInteractionDiagnostics(page: Page): Promise<void> {
   });
 }
 
-test('deferred high-capability scene obeys loading and lifecycle budgets', async ({ page }) => {
-  await installHighCapabilitySceneProfile(page);
-  await installSceneDiagnostics(page);
-  const requestedUrls: string[] = [];
-  const cdp = await page.context().newCDPSession(page);
-  await cdp.send('Network.enable');
-  cdp.on('Network.requestWillBeSent', ({ request }) => requestedUrls.push(request.url));
-
-  await page.setViewportSize(DESKTOP_VIEWPORT);
-  await page.goto('en/');
-  const island = page.locator('#resolution-story .story__visual > astro-island[client="visible"]');
-  await expect(island).toBeAttached();
-  const hydrationSentinel = island.locator(':scope > [data-resolution-scene-sentinel]');
-  await expect(hydrationSentinel).toBeAttached();
-  const sceneChunkPath = await island.getAttribute('component-url');
-  expect(sceneChunkPath).toMatch(/\/ResolutionScene\.client\.[A-Za-z0-9_-]+\.js$/);
-  await page.waitForLoadState('networkidle');
-
-  const initialIslandTop = await hydrationSentinel.evaluate(
-    (element) => element.getBoundingClientRect().top,
-  );
-  expect(initialIslandTop).toBeGreaterThan(DESKTOP_VIEWPORT.height);
-  expect(requestedUrls.filter((url) => url.endsWith(sceneChunkPath!))).toEqual([]);
-
-  await hydrationSentinel.scrollIntoViewIfNeeded();
-  await expect.poll(() => requestedUrls.filter((url) => url.endsWith(sceneChunkPath!)).length).toBe(1);
-  const canvas = page.locator('[data-resolution-scene] canvas');
-  await expect(canvas).toBeVisible();
-
-  await page.waitForTimeout(200);
-  const lcp = await page.evaluate(() => (
-    window as typeof window & {
-      __flowsolveScenePerformanceDiagnostics: {
-        lcpElement: string;
-        lcpWasCanvas: boolean;
-      };
-    }
-  ).__flowsolveScenePerformanceDiagnostics);
-  expect(lcp.lcpElement).not.toBe('');
-  expect(lcp.lcpWasCanvas, `LCP element was ${lcp.lcpElement}`).toBe(false);
-
-  await page.evaluate(() => {
-    document.documentElement.style.scrollBehavior = 'auto';
-    window.scrollTo(0, document.documentElement.scrollHeight);
-  });
-  await expect(canvas).not.toBeInViewport();
-  await page.waitForTimeout(350);
-  const idleRafStart = await page.evaluate(() => (
-    window as typeof window & {
-      __flowsolveScenePerformanceDiagnostics: { rafRequests: number };
-    }
-  ).__flowsolveScenePerformanceDiagnostics.rafRequests);
-  await page.waitForTimeout(500);
-  const idleRafEnd = await page.evaluate(() => (
-    window as typeof window & {
-      __flowsolveScenePerformanceDiagnostics: { rafRequests: number };
-    }
-  ).__flowsolveScenePerformanceDiagnostics.rafRequests);
-  expect(idleRafEnd, 'recurring requestAnimationFrame work remained while idle/offscreen').toBe(
-    idleRafStart,
-  );
-});
-
-test('keeps the resolution scene visible while later story stages advance it', async ({ page }) => {
-  await installHighCapabilitySceneProfile(page);
+test('keeps the static resolution poster available alongside every story stage', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('en/');
 
-  const island = page.locator('#resolution-story .story__visual > astro-island[client="visible"]');
-  const hydrationSentinel = island.locator(':scope > [data-resolution-scene-sentinel]');
-  await hydrationSentinel.scrollIntoViewIfNeeded();
-
-  const scene = page.locator('[data-resolution-scene]');
-  await expect(scene).toBeVisible();
+  const poster = page.locator('#resolution-story > .scene-poster-shell');
+  await expect(poster).toBeVisible();
+  await expect(page.locator('[data-resolution-scene]')).toHaveCount(0);
 
   const laterStage = page.locator('[data-story-stage="candidates"]');
   await laterStage.scrollIntoViewIfNeeded();
   await expect(laterStage).toBeInViewport();
-  await expect(scene).toBeInViewport();
+  await expect(poster).toBeAttached();
+  const posterBounds = await poster.boundingBox();
+  expect(posterBounds?.width).toBeGreaterThan(0);
+  expect(posterBounds?.height).toBeGreaterThan(0);
 });
 
 test('production low-power fallback interactions stay within the lab INP proxy budget', {
@@ -237,13 +143,7 @@ test('production low-power fallback interactions stay within the lab INP proxy b
       hardwareConcurrency: navigator.hardwareConcurrency,
     }))).toEqual({ deviceMemory: 8, hardwareConcurrency: 2 });
 
-    const island = page.locator('#resolution-story .story__visual > astro-island[client="visible"]');
-    const hydrationSentinel = island.locator(':scope > [data-resolution-scene-sentinel]');
-    await expect(hydrationSentinel).toBeAttached();
-    await hydrationSentinel.scrollIntoViewIfNeeded();
-    await expect(hydrationSentinel).toHaveCount(0);
-    await expect(page.locator('[data-resolution-scene]')).toHaveCount(0);
-    await expect(page.locator('#resolution-story .story__visual > .scene-poster-shell')).toBeVisible();
+    await expect(page.locator('#resolution-story > .scene-poster-shell')).toBeVisible();
 
     await page.evaluate(() => {
       document.documentElement.style.scrollBehavior = 'auto';
