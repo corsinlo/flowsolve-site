@@ -161,7 +161,7 @@ describe.each(Object.entries(localeExpectations))('%s generated landing page', (
 
   it('reserves a fixed decorative poster shell', () => {
     const $ = localeHtml(typedLocale);
-    const poster = $('#story #resolution-story > aside.scene-poster-shell[data-aspect-ratio="8/5"]');
+    const poster = $('#story #resolution-story > .story__visual > aside.scene-poster-shell[data-aspect-ratio="8/5"]');
 
     expect(poster).toHaveLength(1);
     expect($('main aside.scene-poster-shell')).toHaveLength(1);
@@ -175,11 +175,13 @@ describe.each(Object.entries(localeExpectations))('%s generated landing page', (
   it('keeps the poster first and hydrates the exact resolution story only near visibility', () => {
     const $ = localeHtml(typedLocale);
     const experience = $('#story > #resolution-story.story__experience');
-    const children = experience.children();
+    const visual = experience.children('.story__visual');
+    const children = visual.children();
     const poster = children.filter('aside.scene-poster-shell');
     const island = children.filter('astro-island');
 
     expect(experience).toHaveLength(1);
+    expect(visual).toHaveLength(1);
     expect(poster).toHaveLength(1);
     expect(poster.index()).toBeLessThan(island.index());
     expect(island.is('astro-island[client="visible"][component-export="ResolutionScene"]')).toBe(true);

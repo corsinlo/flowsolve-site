@@ -93,7 +93,7 @@ test('deferred high-capability scene obeys loading and lifecycle budgets', async
 
   await page.setViewportSize(DESKTOP_VIEWPORT);
   await page.goto('en/');
-  const island = page.locator('#resolution-story > astro-island[client="visible"]');
+  const island = page.locator('#resolution-story .story__visual > astro-island[client="visible"]');
   await expect(island).toBeAttached();
   const hydrationSentinel = island.locator(':scope > [data-resolution-scene-sentinel]');
   await expect(hydrationSentinel).toBeAttached();
@@ -144,6 +144,24 @@ test('deferred high-capability scene obeys loading and lifecycle budgets', async
   expect(idleRafEnd, 'recurring requestAnimationFrame work remained while idle/offscreen').toBe(
     idleRafStart,
   );
+});
+
+test('keeps the resolution scene visible while later story stages advance it', async ({ page }) => {
+  await installHighCapabilitySceneProfile(page);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('en/');
+
+  const island = page.locator('#resolution-story .story__visual > astro-island[client="visible"]');
+  const hydrationSentinel = island.locator(':scope > [data-resolution-scene-sentinel]');
+  await hydrationSentinel.scrollIntoViewIfNeeded();
+
+  const scene = page.locator('[data-resolution-scene]');
+  await expect(scene).toBeVisible();
+
+  const laterStage = page.locator('[data-story-stage="candidates"]');
+  await laterStage.scrollIntoViewIfNeeded();
+  await expect(laterStage).toBeInViewport();
+  await expect(scene).toBeInViewport();
 });
 
 test('production low-power fallback interactions stay within the lab INP proxy budget', {
@@ -219,13 +237,13 @@ test('production low-power fallback interactions stay within the lab INP proxy b
       hardwareConcurrency: navigator.hardwareConcurrency,
     }))).toEqual({ deviceMemory: 8, hardwareConcurrency: 2 });
 
-    const island = page.locator('#resolution-story > astro-island[client="visible"]');
+    const island = page.locator('#resolution-story .story__visual > astro-island[client="visible"]');
     const hydrationSentinel = island.locator(':scope > [data-resolution-scene-sentinel]');
     await expect(hydrationSentinel).toBeAttached();
     await hydrationSentinel.scrollIntoViewIfNeeded();
     await expect(hydrationSentinel).toHaveCount(0);
     await expect(page.locator('[data-resolution-scene]')).toHaveCount(0);
-    await expect(page.locator('#resolution-story > .scene-poster-shell')).toBeVisible();
+    await expect(page.locator('#resolution-story .story__visual > .scene-poster-shell')).toBeVisible();
 
     await page.evaluate(() => {
       document.documentElement.style.scrollBehavior = 'auto';

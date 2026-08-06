@@ -18,8 +18,10 @@ const { copy } = Astro.props;
   </div>
 
   <div id="resolution-story" class="story__experience">
-    <ScenePoster />
-    <ResolutionScene storyId="resolution-story" client:visible />
+    <div class="story__visual">
+      <ScenePoster />
+      <ResolutionScene storyId="resolution-story" client:visible />
+    </div>
     <div class="story__stages">
       {STORY_STAGE_IDS.map((stageId, index) => {
         const stage = copy.story.stages[stageId];

@@ -22,14 +22,14 @@ test('keeps the complete journey usable when enhancement is unavailable', async 
   await page.goto('en/');
 
   if (testInfo.project.name === 'reduced-motion' || testInfo.project.name === 'get-context-null') {
-    const island = page.locator('#resolution-story > astro-island[client="visible"]');
+    const island = page.locator('#resolution-story .story__visual > astro-island[client="visible"]');
     await expect(island).toBeVisible();
     await island.scrollIntoViewIfNeeded();
     await expect(island).not.toHaveAttribute('ssr', '');
   }
 
   if (testInfo.project.name === 'webgl-context-lost') {
-    const island = page.locator('#resolution-story > astro-island[client="visible"]');
+    const island = page.locator('#resolution-story .story__visual > astro-island[client="visible"]');
     await expect(island).toBeVisible();
     await island.scrollIntoViewIfNeeded();
     const canvas = page.locator('[data-resolution-scene] canvas');

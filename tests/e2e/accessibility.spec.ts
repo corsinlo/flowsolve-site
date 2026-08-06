@@ -78,7 +78,7 @@ for (const viewport of viewports) {
     for (const stage of await stages.all()) await expect(stage).toBeVisible();
     await expect(page.locator('#trust')).toBeVisible();
     if (viewport.width === 1440) {
-      const island = page.locator('#resolution-story > astro-island[client="visible"]');
+      const island = page.locator('#resolution-story .story__visual > astro-island[client="visible"]');
       await island.scrollIntoViewIfNeeded();
       const scene = page.locator('[data-resolution-scene]');
       await expect(scene).toBeVisible();

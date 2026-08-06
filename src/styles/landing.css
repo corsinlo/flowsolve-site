@@ -262,8 +262,15 @@
   min-width: 0;
 }
 
-.story__experience > .scene-poster-shell {
+.story__visual {
+  position: sticky;
+  z-index: 2;
+  top: 6.25rem;
   margin-bottom: 1rem;
+}
+
+.story__visual > .scene-poster-shell {
+  height: 100%;
 }
 
 .story-card {
@@ -848,6 +855,11 @@ body:has(#pilot:target) .locale-switcher__set[data-preserves-section='pilot'] {
 
   .story__intro {
     position: static;
+  }
+
+  .story__visual {
+    position: relative;
+    top: auto;
   }
 
   .how__steps {
