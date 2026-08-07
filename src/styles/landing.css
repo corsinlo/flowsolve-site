@@ -263,6 +263,9 @@
 }
 
 .story__experience > .scene-poster-shell {
+  position: sticky;
+  z-index: 2;
+  top: 6.25rem;
   margin-bottom: 1rem;
 }
 
