@@ -53,7 +53,7 @@ async function installInteractionDiagnostics(page: Page): Promise<void> {
   });
 }
 
-test('keeps the static resolution poster available alongside every story stage', async ({ page }) => {
+test('keeps the static resolution poster in normal document flow', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('en/');
 
@@ -65,7 +65,7 @@ test('keeps the static resolution poster available alongside every story stage',
   await laterStage.scrollIntoViewIfNeeded();
   await expect(laterStage).toBeInViewport();
   await expect(poster).toBeAttached();
-  await expect(poster).toBeInViewport();
+  await expect(poster).toHaveCSS('position', 'relative');
   const posterBounds = await poster.boundingBox();
   expect(posterBounds?.width).toBeGreaterThan(0);
   expect(posterBounds?.height).toBeGreaterThan(0);
