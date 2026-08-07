@@ -26,6 +26,12 @@ function sceneEntryKey(manifest) {
   return matches[0];
 }
 
+export function hasSceneEntry(manifest) {
+  return Object.entries(manifest).some(([key, value]) => [key, value.src].some((candidate) => (
+    typeof candidate === 'string' && candidate.includes('ResolutionScene.client')
+  )));
+}
+
 function collectManifestGraph(manifest, entryKeys) {
   const visitedEntries = new Set();
   const visitedFiles = new Set();
@@ -225,7 +231,12 @@ function kibibytes(bytes) {
 
 async function main() {
   const manifest = JSON.parse(await readFile(MANIFEST_PATH, 'utf8'));
-  const scene = await measureSceneGraph(manifest);
+  // The landing page can intentionally ship in static-poster mode. In that
+  // build there is no deferred scene entry, so the budget is zero rather than
+  // a deployment error.
+  const scene = hasSceneEntry(manifest)
+    ? await measureSceneGraph(manifest)
+    : { files: [], gzipBytes: 0 };
   const initialPages = await Promise.all(
     INITIAL_DOCUMENTS.map((document) => measureInitialAssets('dist', document, manifest)),
   );
@@ -234,9 +245,9 @@ async function main() {
     enforceBudgets({ sceneGzipBytes: scene.gzipBytes, initialAssetBytes: initial.totalBytes });
   }
 
-  process.stdout.write(
-    `Deferred scene graph: ${kibibytes(scene.gzipBytes)} gzip / 350.00 KiB (${scene.files.length} files)\n`,
-  );
+  process.stdout.write(scene.files.length > 0
+    ? `Deferred scene graph: ${kibibytes(scene.gzipBytes)} gzip / 350.00 KiB (${scene.files.length} files)\n`
+    : 'Deferred scene graph: not shipped (static poster mode)\n');
   for (const initial of initialPages) {
     process.stdout.write(
       `Initial assets ${initial.htmlFile}: ${kibibytes(initial.totalBytes)} / 2048.00 KiB (${initial.files.length} files)\n`,
