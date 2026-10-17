@@ -43,7 +43,7 @@
     "@vitest/coverage-v8": "^4.1.10",
     "cheerio": "^1.2.0",
     "gzip-size": "^7.0.0",
-    "jsdom": "^29.1.1",
+    "jsdom": "^30.0.1",
     "npm-run-all2": "^8.0.4",
     "typescript": "^6.0.3",
     "vitest": "^4.1.10"
